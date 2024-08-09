@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div id="chessboard" class="chessboard"></div>
+        <div class="controllers">
+            <form action="post">
+                <button type="submit" class="restart" onclick="sendCommand('FIRMWARE_RESTART')">FIRMWARE_RESTART</button>
+                <button type="submit" class="homeX" onclick="sendCommand('G28 X')">X Home</button>
+                <button type="submit" class="homeY" onclick="sendCommand('G28 Y')">Y Home</button>
+                <button type="submit" class="x100" onclick="sendCommand('G1 X100')">X + 100</button>
+                <button type="submit" class="y100" onclick="sendCommand('G1 Y100')">Y + 100</button>
+                <button type="submit" class="x200" onclick="sendCommand('G1 X200')">X + 200</button>
+                <button type="submit" class="y200" onclick="sendCommand('G1 Y200')">Y + 200</button>
+                <button type="submit" class="emergencyStop" onclick="sendCommand('M112')">EMERGENCY STOP</button>
+            </form>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

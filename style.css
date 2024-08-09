@@ -1,0 +1,58 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f0f0f0;
+    margin: 0;
+}
+
+.container{
+    display: flex;
+    justify-content: space-between;
+    width: 60%;
+    align-items: center;
+}
+
+.controllers{
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    height: auto;
+}
+
+button{
+    background: #37B7C3;
+    border-radius: 5px;
+    border: none;
+    margin: 2px;
+    padding: 3px;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+svg{
+    height: 20px;
+    color: white;
+}
+
+.chessboard {
+    display: grid;
+    grid-template-columns: repeat(8, 50px);
+    grid-template-rows: repeat(8, 50px);
+}
+
+.square {
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+}
+
+.black {
+    background-color: #000;
+}
+
+.white {
+    background-color: #fff;
+}
