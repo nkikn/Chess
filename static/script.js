@@ -94,25 +94,129 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     function getPossibleMoves(pieceType, position) {
-        // Implement chess logic to calculate moves for each piece type
-        // Return an array of positions like ['a3', 'b4', 'c5'] etc.
-        // For simplicity, you can start with pawn moves and expand to other pieces
         let moves = [];
-    
         const files = 'abcdefgh';
         const rank = parseInt(position[1], 10);
         const file = position[0];
+        const fileIndex = files.indexOf(file);
     
-        if (pieceType === 'P') {  // Example for white pawn
-            const move = `${file}${rank + 1}`;
-            moves.push(move);
-            // Add logic for other pawn moves (e.g., double move, captures)
+        switch (pieceType) {
+            case 'P': // White Pawn
+                if (rank < 8) {
+                    moves.push(`${file}${rank + 1}`);
+                    // Double move if on initial position
+                    if (rank === 2) {
+                        moves.push(`${file}${rank + 2}`);
+                    }
+                    // Add capture moves (left and right diagonals)
+                    // if (fileIndex > 0) {
+                    //     moves.push(`${files[fileIndex - 1]}${rank + 1}`);
+                    // }
+                    // if (fileIndex < 7) {
+                    //     moves.push(`${files[fileIndex + 1]}${rank + 1}`);
+                    // }
+                }
+                break;
+    
+            case 'p_black': // Black Pawn
+                if (rank > 1) {
+                    moves.push(`${file}${rank - 1}`);
+                    // Double move if on initial position
+                    if (rank === 7) {
+                        moves.push(`${file}${rank - 2}`);
+                    }
+                    // Add capture moves (left and right diagonals)
+                    // if (fileIndex > 0) {
+                    //     moves.push(`${files[fileIndex - 1]}${rank - 1}`);
+                    // }
+                    // if (fileIndex < 7) {
+                    //     moves.push(`${files[fileIndex + 1]}${rank - 1}`);
+                    // }
+                }
+                break;
+    
+            case 'R': case 'r_black': // Rook (White and Black)
+                for (let i = 1; i < 8; i++) {
+                    if (fileIndex + i < 8) moves.push(`${files[fileIndex + i]}${rank}`);
+                    if (fileIndex - i >= 0) moves.push(`${files[fileIndex - i]}${rank}`);
+                    if (rank + i <= 8) moves.push(`${file}${rank + i}`);
+                    if (rank - i >= 1) moves.push(`${file}${rank - i}`);
+                }
+                break;
+    
+            case 'N': case 'n_black': // Knight (White and Black)
+                const knightMoves = [
+                    [2, 1], [2, -1], [-2, 1], [-2, -1],
+                    [1, 2], [1, -2], [-1, 2], [-1, -2]
+                ];
+                knightMoves.forEach(([dx, dy]) => {
+                    const newFileIndex = fileIndex + dx;
+                    const newRank = rank + dy;
+                    if (newFileIndex >= 0 && newFileIndex < 8 && newRank >= 1 && newRank <= 8) {
+                        moves.push(`${files[newFileIndex]}${newRank}`);
+                    }
+                });
+                break;
+    
+            case 'B': case 'b_black': // Bishop (White and Black)
+                for (let i = 1; i < 8; i++) {
+                    if (fileIndex + i < 8 && rank + i <= 8) moves.push(`${files[fileIndex + i]}${rank + i}`);
+                    if (fileIndex - i >= 0 && rank + i <= 8) moves.push(`${files[fileIndex - i]}${rank + i}`);
+                    if (fileIndex + i < 8 && rank - i >= 1) moves.push(`${files[fileIndex + i]}${rank - i}`);
+                    if (fileIndex - i >= 0 && rank - i >= 1) moves.push(`${files[fileIndex - i]}${rank - i}`);
+                }
+                break;
+    
+            case 'Q': case 'q_black': // Queen (White and Black)
+                // Combine Rook and Bishop moves
+                moves = [
+                    ...getPossibleMoves('R', position),
+                    ...getPossibleMoves('B', position)
+                ];
+                break;
+    
+            case 'K': case 'k_black': // King (White and Black)
+                const kingMoves = [
+                    [1, 0], [-1, 0], [0, 1], [0, -1],
+                    [1, 1], [-1, 1], [1, -1], [-1, -1]
+                ];
+                kingMoves.forEach(([dx, dy]) => {
+                    const newFileIndex = fileIndex + dx;
+                    const newRank = rank + dy;
+                    if (getElementOnPile(`${newFileIndex}${newRank}`) != 
+                        newFileIndex >= 0 && newFileIndex < 8 && newRank >= 1 && newRank <= 8) {
+                        moves.push(`${files[newFileIndex]}${newRank}`);
+                    }
+                });
+                break;
         }
-    
-        // Add logic for other pieces (Rook, Knight, Bishop, Queen, King)
-    
+        
         return moves;
+    }    
+
+    
+    function getElementOnPile(pile) {
+        const files = 'abcdefgh';
+        
+        const file = pile[0];
+        const rank = parseInt(pile[1], 10);
+        
+        const fileIndex = files.indexOf(file);
+        
+        const rankIndex = 8 - rank; // Convert rank (1-8) to a 0-based row index
+        const boardIndex = rankIndex * 8 + fileIndex; // Combine rank and file indices
+            const chessboard = document.getElementById('chessboard');
+        const elementOnPile = chessboard.children[boardIndex];
+        
+        const pieceImage = elementOnPile.querySelector('img');
+        
+        if (pieceImage) {
+            return pieceImage.src.split('/').pop().split('.')[0];
+        } else {
+            return null;  // No piece on this square
+        }
     }
+    
     
 
     function onDragOver(event) {
@@ -134,7 +238,7 @@ document.addEventListener("DOMContentLoaded", function() {
     
             const move = `${fromFile}${fromRank}${toFile}${toRank}`;
             targetSquare.appendChild(selectedPiece);
-    
+            console.log(getElementOnPile(`${toFile}${toRank}`))
             makeMove(move);
         }
     
